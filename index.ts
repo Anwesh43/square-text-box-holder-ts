@@ -236,3 +236,25 @@ class SquareTextBoxHolder {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    sbth : SquareTextBoxHolder = new SquareTextBoxHolder()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.sbth.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.sbth.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.sbth.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
