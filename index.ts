@@ -40,38 +40,45 @@ class DrawingUtil {
 
     static drawSquare(context : CanvasRenderingContext2D, size : number, sc1 : number, sc2 : number) {
         for (var j = 0; j < lines; j++) {
+            const sc2j : number = ScaleUtil.divideScale(sc2, j, lines)
+            const sc1j : number = ScaleUtil.divideScale(sc1, j, lines)
             context.save()
             context.rotate(deg * j)
-            DrawingUtil.drawLine(
-                context,
-                size,
-                -size + 2 * size * ScaleUtil.divideScale(sc2, j, lines),
-                size, 
-                -size + 2 * size * ScaleUtil.divideScale(sc1, j, lines)
-            )
+            if (sc1j > 0 && sc2j < 1) {
+                DrawingUtil.drawLine(
+                    context,
+                    size,
+                    -size + 2 * size * sc2j,
+                    size, 
+                    -size + 2 * size * sc1j
+                )
+            }
             context.restore()
         }
     }
     
     static drawTextInsideSquare(context : CanvasRenderingContext2D, size : number, sc1 : number, sc2 : number) {
         const totalY : number = textSizeFactor * size * 2 
-        const startY : number = -size + (size - totalY / 2)
         const gap : number = totalY / lines 
+        const startY : number = -size + (size - totalY / 2) + gap / 2
         const x : number = (totalY / 2)
         for (var j = 0; j < 4; j++) {
             const sc1j : number = ScaleUtil.divideScale(sc1, j, lines)
+            const sc2j : number = ScaleUtil.divideScale(sc2, j, lines)
             context.save()
             context.translate(
-                (w / 2 + x) * ScaleUtil.divideScale(sc2, j, lines),
+                (w / 2 + x) * sc2j,
                 startY + gap * j
             )
-            DrawingUtil.drawLine(
-                context, 
-                -x * sc1j, 
-                 0, 
-                 x * sc1j, 
-                 0              
-            )
+            if (sc1j) {
+                DrawingUtil.drawLine(
+                    context, 
+                    -x * sc1j, 
+                    0, 
+                    x * sc1j, 
+                    0              
+                )
+            }
             context.restore()
         }
     }
